@@ -1,12 +1,10 @@
 # Restaurant Chooser 🍽️
 
-A restaurant finder app built with Next.js and the Google Places API (New).
+A restaurant finder app built with Next.js and the **Overpass API** (OpenStreetMap).
+No API key required — completely free.
 
 ## Deploy to Vercel
 
 1. Upload all these files to a GitHub repo
 2. Go to vercel.com → New Project → Import your GitHub repo
-3. Add environment variable in Vercel dashboard:
-   - Key: `GOOGLE_PLACES_API_KEY`
-   - Value: your Google Places API key (enable the "Places API (New)" in Google Cloud Console)
-4. Click Deploy — done!
+3. Click Deploy — done! (no environment variables needed)
