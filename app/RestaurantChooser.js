@@ -2,19 +2,19 @@
 import { useState, useCallback } from "react";
 
 const CUISINES = [
-  { label: "🍕 Italian", fsq: "13236" },
-  { label: "🍣 Japanese", fsq: "13263" },
-  { label: "🌮 Mexican", fsq: "13303" },
-  { label: "🍜 Chinese", fsq: "13199" },
-  { label: "🥗 American", fsq: "13149" },
-  { label: "🧆 Mediterranean", fsq: "13288" },
-  { label: "🍛 Indian", fsq: "13252" },
-  { label: "🥐 French", fsq: "13227" },
-  { label: "🍔 Burgers", fsq: "13064" },
-  { label: "🌶️ Thai", fsq: "13352" },
-  { label: "🥩 Steakhouse", fsq: "13072" },
-  { label: "🐟 Seafood", fsq: "13028" },
-  { label: "🍷 Portuguese", fsq: "13195" },
+  { label: "🍕 Italian", yelp: "italian" },
+  { label: "🍣 Japanese", yelp: "japanese" },
+  { label: "🌮 Mexican", yelp: "mexican" },
+  { label: "🍜 Chinese", yelp: "chinese" },
+  { label: "🥗 American", yelp: "newamerican" },
+  { label: "🧆 Mediterranean", yelp: "mediterranean" },
+  { label: "🍛 Indian", yelp: "indpak" },
+  { label: "🥐 French", yelp: "french" },
+  { label: "🍔 Burgers", yelp: "burgers" },
+  { label: "🌶️ Thai", yelp: "thai" },
+  { label: "🥩 Steakhouse", yelp: "steak" },
+  { label: "🐟 Seafood", yelp: "seafood" },
+  { label: "🍷 Portuguese", yelp: "portuguese" },
 ];
 
 const VIBES = [
@@ -24,10 +24,10 @@ const VIBES = [
 ];
 
 const BUDGETS = [
-  { label: "€ Under €15", fsq: 1 },
-  { label: "€€ €15–€35", fsq: 2 },
-  { label: "€€€ €35–€60", fsq: 3 },
-  { label: "€€€€ €60+", fsq: 4 },
+  { label: "€ Under €15", yelp: 1 },
+  { label: "€€ €15–€35", yelp: 2 },
+  { label: "€€€ €35–€60", yelp: 3 },
+  { label: "€€€€ €60+", yelp: 4 },
 ];
 
 const DISTANCES = [
@@ -189,7 +189,7 @@ export default function RestaurantChooser() {
           ? CUISINES.filter(c => cuisine.includes(c.label))
           : [];
 
-      const categoryIds = selectedCuisines.map(c => c.fsq).join(",") || "13000";
+      const categoryIds = selectedCuisines.map(c => c.yelp).join(",") || "restaurants";
 
       const params = new URLSearchParams({
         ll: `${latitude},${longitude}`,
@@ -203,8 +203,8 @@ export default function RestaurantChooser() {
       if (budget.length === 1) {
         const b = BUDGETS.find(b => b.label === budget[0]);
         if (b) {
-          params.append("min_price", String(b.fsq));
-          params.append("max_price", String(b.fsq));
+          params.append("min_price", String(b.yelp));
+          params.append("max_price", String(b.yelp));
         }
       }
 
