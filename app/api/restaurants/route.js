@@ -1,3 +1,5 @@
+export const maxDuration = 30; // allow up to 30s for this serverless route
+
 function haversineDistance(lat1, lon1, lat2, lon2) {
   const R = 6371000;
   const toRad = (d) => (d * Math.PI) / 180;
@@ -22,7 +24,7 @@ export async function GET(request) {
   const ll = searchParams.get("ll") || "";
   const [latitude, longitude] = ll.split(",").map(Number);
   const categoriesParam = searchParams.get("categories") || "";
-  const radius = Math.min(parseInt(searchParams.get("radius") || "50000", 10), 50000);
+  const radius = Math.min(parseInt(searchParams.get("radius") || "5000", 10), 50000);
   const limit = Math.min(parseInt(searchParams.get("limit") || "20", 10), 20);
 
   // Build cuisine filter — skip if the param is empty or the generic "restaurant" default
@@ -31,20 +33,25 @@ export async function GET(request) {
     cuisines.length > 0 ? `["cuisine"~"${cuisines.join("|")}",i]` : "";
 
   const query = `
-[out:json][timeout:10];
+[out:json][timeout:25];
 (
   node["amenity"="restaurant"]${cuisineFilter}(around:${radius},${latitude},${longitude});
   way["amenity"="restaurant"]${cuisineFilter}(around:${radius},${latitude},${longitude});
 );
-out body center;
+out body center ${limit};
 `.trim();
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 25000);
 
   try {
     const res = await fetch("https://overpass-api.de/api/interpreter", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `data=${encodeURIComponent(query)}`,
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
 
     if (!res.ok) {
       return new Response(JSON.stringify({ error: `Overpass error: ${res.status}` }), {
@@ -79,9 +86,14 @@ out body center;
       headers: { "Content-Type": "application/json" },
     });
   } catch (e) {
-    return new Response(JSON.stringify({ error: e.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    clearTimeout(timeoutId);
+    const isTimeout = e.name === "AbortError";
+    return new Response(
+      JSON.stringify({ error: isTimeout ? "Request timed out — try a smaller radius" : e.message }),
+      {
+        status: isTimeout ? 504 : 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }
