@@ -2,19 +2,19 @@
 import { useState, useCallback } from "react";
 
 const CUISINES = [
-  { label: "🍕 Italian", fsq: "13236" },
-  { label: "🍣 Japanese", fsq: "13263" },
-  { label: "🌮 Mexican", fsq: "13303" },
-  { label: "🍜 Chinese", fsq: "13199" },
-  { label: "🥗 American", fsq: "13149" },
-  { label: "🧆 Mediterranean", fsq: "13288" },
-  { label: "🍛 Indian", fsq: "13252" },
-  { label: "🥐 French", fsq: "13227" },
-  { label: "🍔 Burgers", fsq: "13064" },
-  { label: "🌶️ Thai", fsq: "13352" },
-  { label: "🥩 Steakhouse", fsq: "13072" },
-  { label: "🐟 Seafood", fsq: "13028" },
-  { label: "🍷 Portuguese", fsq: "13195" },
+  { label: "🍕 Italian", google: "italian_restaurant" },
+  { label: "🍣 Japanese", google: "japanese_restaurant" },
+  { label: "🌮 Mexican", google: "mexican_restaurant" },
+  { label: "🍜 Chinese", google: "chinese_restaurant" },
+  { label: "🥗 American", google: "american_restaurant" },
+  { label: "🧆 Mediterranean", google: "mediterranean_restaurant" },
+  { label: "🍛 Indian", google: "indian_restaurant" },
+  { label: "🥐 French", google: "french_restaurant" },
+  { label: "🍔 Burgers", google: "hamburger_restaurant" },
+  { label: "🌶️ Thai", google: "thai_restaurant" },
+  { label: "🥩 Steakhouse", google: "steak_house" },
+  { label: "🐟 Seafood", google: "seafood_restaurant" },
+  { label: "🍷 Portuguese", google: "spanish_restaurant" },
 ];
 
 const VIBES = [
@@ -24,10 +24,10 @@ const VIBES = [
 ];
 
 const BUDGETS = [
-  { label: "€ Under €15", fsq: 1 },
-  { label: "€€ €15–€35", fsq: 2 },
-  { label: "€€€ €35–€60", fsq: 3 },
-  { label: "€€€€ €60+", fsq: 4 },
+  { label: "€ Under €15", google: 1 },
+  { label: "€€ €15–€35", google: 2 },
+  { label: "€€€ €35–€60", google: 3 },
+  { label: "€€€€ €60+", google: 4 },
 ];
 
 const DISTANCES = [
@@ -189,7 +189,7 @@ export default function RestaurantChooser() {
           ? CUISINES.filter(c => cuisine.includes(c.label))
           : [];
 
-      const categoryIds = selectedCuisines.map(c => c.fsq).join(",") || "13000";
+      const categoryIds = selectedCuisines.map(c => c.google).join(",") || "restaurant";
 
       const params = new URLSearchParams({
         ll: `${latitude},${longitude}`,
@@ -203,8 +203,8 @@ export default function RestaurantChooser() {
       if (budget.length === 1) {
         const b = BUDGETS.find(b => b.label === budget[0]);
         if (b) {
-          params.append("min_price", String(b.fsq));
-          params.append("max_price", String(b.fsq));
+          params.append("min_price", String(b.google));
+          params.append("max_price", String(b.google));
         }
       }
 
